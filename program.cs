@@ -7,11 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Register MVC Controllers and Views + API Support
 builder.Services.AddControllersWithViews();
 
-// 2. Register EF Core In-Memory Database
+// 2. Swagger API Explorer & Generator
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// 3. Register EF Core In-Memory Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseInMemoryDatabase("CarDealerDb"));
 
-// 3. Register Cookie Authentication for Admin access
+// 4. Register Cookie Authentication for Admin access
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -27,6 +31,14 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     context.Database.EnsureCreated();
 }
+
+// 5. Enable Swagger and Swagger UI middleware
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Car Dealer API V1");
+    c.RoutePrefix = "swagger";
+});
 
 if (!app.Environment.IsDevelopment())
 {
