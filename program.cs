@@ -7,15 +7,29 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Register MVC Controllers and Views + API Support
 builder.Services.AddControllersWithViews();
 
-// 2. Swagger API Explorer & Generator
+// 2. Add Swagger API Explorer & Generator
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 3. Register EF Core In-Memory Database
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase("CarDealerDb"));
+// 3. Register EF Core Database (SQL Server if configured, otherwise SQLite file DB)
+var sqlServerConnectionString = builder.Configuration.GetConnectionString("SqlServerConnection");
+var sqliteConnectionString = builder.Configuration.GetConnectionString("SqliteConnection");
 
-// 4. Register Cookie Authentication for Admin access
+// Uses SQL Server if running locally on Windows with LocalDB, otherwise falls back to SQLite
+if (builder.Environment.IsDevelopment() && !string.IsNullOrEmpty(sqlServerConnectionString))
+{
+    // Toggle between UseSqlServer or UseSqlite based on team setup
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(sqliteConnectionString)); 
+        // Note: Change 'UseSqlite' to 'UseSqlServer(sqlServerConnectionString)' if your teammate uses local SQL Server!
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(sqliteConnectionString));
+}
+
+// 4. Register Cookie Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -25,14 +39,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// Ensure seeded data is created in database on startup
+// Ensure the database file/tables are created on startup without overwriting existing entries
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     context.Database.EnsureCreated();
 }
 
-// 5. Enable Swagger and Swagger UI middleware
+// 5. Enable Swagger UI
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -54,12 +68,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map default MVC Controller route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Map REST API Controllers
 app.MapControllers();
 
 app.Run();
