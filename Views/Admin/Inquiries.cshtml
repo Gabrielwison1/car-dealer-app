@@ -1,0 +1,27 @@
+@model IEnumerable<CarDealerApp.Models.Inquiry>
+
+<h2>Customer Inquiries</h2>
+
+<table class="table table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Car</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inq in Model)
+        {
+            <tr>
+                <td>@inq.SubmittedAt.ToString("g")</td>
+                <td>@inq.CustomerName</td>
+                <td>@inq.CustomerEmail</td>
+                <td>@(inq.Car != null ? $"{inq.Car.Year} {inq.Car.Make} {inq.Car.Model}" : "N/A")</td>
+                <td>@inq.Message</td>
+            </tr>
+        }
+    </tbody>
+</table>

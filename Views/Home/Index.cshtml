@@ -1,0 +1,25 @@
+@model IEnumerable<CarDealerApp.Models.Car>
+
+<div class="text-center my-4">
+    <h1 class="display-4 fw-bold">Car Showcase</h1>
+    <p class="lead">Explore our premium inventory of vehicles</p>
+</div>
+
+<div class="row">
+    @foreach (var car in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="@car.ImageUrl" class="card-img-top" alt="@car.Make @car.Model" style="height:200px; object-fit:cover;" />
+                <div class="card-body">
+                    <h5 class="card-title">@car.Year @car.Make @car.Model</h5>
+                    <p class="card-text text-primary fs-5 fw-bold">$@car.Price.ToString("N0")</p>
+                    <p class="card-text text-muted">@car.Description</p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-primary w-100">View Details & Inquire</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

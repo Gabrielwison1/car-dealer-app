@@ -1,0 +1,28 @@
+@model CarDealerApp.Models.LoginViewModel
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow p-4">
+            <h3 class="card-title text-center mb-4">Admin Login</h3>
+
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control" placeholder="admin" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" placeholder="Admin123!" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <div class="mt-3 text-muted text-center fs-7">
+                <small>Default credentials: <strong>admin</strong> / <strong>Admin123!</strong></small>
+            </div>
+        </div>
+    </div>
+</div>
