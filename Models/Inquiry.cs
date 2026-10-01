@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace CarDealerApp.Models
 {
@@ -17,8 +19,11 @@ namespace CarDealerApp.Models
         [Required]
         public string Message { get; set; } = string.Empty;
 
-        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+        public DateTime SubmittedAt { get; set; }
 
+        [JsonIgnore]
+        [ValidateNever]
+        
         public Car? Car { get; set; }
     }
 }
