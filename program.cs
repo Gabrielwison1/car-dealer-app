@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Register MVC Controllers and Views + API Support
 builder.Services.AddControllersWithViews();
 
-<<<<<<< HEAD
+
 
 // 2. Register EF Core In-Memory Database
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -22,7 +22,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // 4. Register Cookie Authentication for Admin access
-=======
 // 2. Add Swagger API Explorer & Generator
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,21 +31,20 @@ var sqlServerConnectionString = builder.Configuration.GetConnectionString("SqlSe
 var sqliteConnectionString = builder.Configuration.GetConnectionString("SqliteConnection");
 
 // Uses SQL Server if running locally on Windows with LocalDB, otherwise falls back to SQLite
-if (builder.Environment.IsDevelopment() && !string.IsNullOrEmpty(sqlServerConnectionString))
-{
-    // Toggle between UseSqlServer or UseSqlite based on team setup
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(sqliteConnectionString)); 
-        // Note: Change 'UseSqlite' to 'UseSqlServer(sqlServerConnectionString)' if your teammate uses local SQL Server!
-}
-else
-{
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(sqliteConnectionString));
-}
+//if (builder.Environment.IsDevelopment() && !string.IsNullOrEmpty(sqlServerConnectionString))
+//{
+//    // Toggle between UseSqlServer or UseSqlite based on team setup
+//    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//        options.UseSqlite(sqliteConnectionString)); 
+//        // Note: Change 'UseSqlite' to 'UseSqlServer(sqlServerConnectionString)' if your teammate uses local SQL Server!
+//}
+//else
+//{
+//    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//        options.UseSqlite(sqliteConnectionString));
+//}
 
 // 4. Register Cookie Authentication
->>>>>>> d575b8db7046dd7f906b905e1bfde9fc33b2304e
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -63,7 +61,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
 }
 
-<<<<<<< HEAD
+
 // Enable Swagger UI 
 app.UseSwagger();
 app.UseSwaggerUI(c => 
@@ -73,7 +71,7 @@ app.UseSwaggerUI(c =>
 }   
 );
 
-=======
+
 // 5. Enable Swagger UI
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -81,7 +79,6 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Car Dealer API V1");
     c.RoutePrefix = "swagger";
 });
->>>>>>> d575b8db7046dd7f906b905e1bfde9fc33b2304e
 
 if (!app.Environment.IsDevelopment())
 {
