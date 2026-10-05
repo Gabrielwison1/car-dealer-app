@@ -3,16 +3,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarDealerApp.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
-        public DbSet<Car> Cars { get; set; }
-        public DbSet<Inquiry> Inquiries { get; set; }
+        public DbSet<Car> Cars { get; set; } = null!;
+        public DbSet<Inquiry> Inquiries { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Fix decimal precision for Price to prevent SQL Server truncation
+            modelBuilder.Entity<Car>()
+                .Property(c => c.Price)
+                .HasPrecision(18, 2);
 
             // Seed initial cars
             modelBuilder.Entity<Car>().HasData(
@@ -23,7 +26,7 @@ namespace CarDealerApp.Data
                     Model = "Camry",
                     Year = 2022,
                     Price = 28000,
-                    ImageUrl = "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600",
+                    ImagePath = "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600",
                     Description = "Reliable, fuel-efficient sedan in excellent condition."
                 },
                 new Car
@@ -33,7 +36,7 @@ namespace CarDealerApp.Data
                     Model = "Model 3",
                     Year = 2023,
                     Price = 42000,
-                    ImageUrl = "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=600",
+                    ImagePath = "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=600",
                     Description = "All-electric performance sedan with autopilot capability."
                 }
             );

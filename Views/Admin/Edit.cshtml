@@ -1,7 +1,7 @@
 @model CarDealerApp.Models.Car
 
 @{
-    ViewData["Title"] = "Add New Car";
+    ViewData["Title"] = "Edit Car";
 }
 
 <style>
@@ -32,29 +32,31 @@
         max-width: 100%;
         margin-top: 1rem;
         border-radius: 8px;
-        display: none;
         object-fit: cover;
     }
     .upload-icon { font-size: 2.5rem; color: #6c757d; }
 </style>
 
 <div class="container mt-4" style="max-width: 700px;">
-    <h2 class="mb-1">Add New Vehicle</h2>
-    <p class="text-muted mb-3">Fill in the details and upload an image from your computer.</p>
+    <h2 class="mb-1">Edit Vehicle</h2>
+    <p class="text-muted mb-3">Update the details below. Leave the image field empty to keep the current image.</p>
     <hr />
 
-    <div asp-validation-summary="All" class="alert alert-danger mb-3" style="display:none;"></div>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
 
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ImagePath" />
+
         <div class="row g-3">
             <div class="col-md-6">
                 <label asp-for="Make" class="form-label fw-semibold">Make</label>
-                <input asp-for="Make" class="form-control" placeholder="e.g. Toyota" required />
+                <input asp-for="Make" class="form-control" required />
                 <span asp-validation-for="Make" class="text-danger small"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="Model" class="form-label fw-semibold">Model</label>
-                <input asp-for="Model" class="form-control" placeholder="e.g. Camry" required />
+                <input asp-for="Model" class="form-control" required />
                 <span asp-validation-for="Model" class="text-danger small"></span>
             </div>
             <div class="col-md-6">
@@ -64,30 +66,42 @@
             </div>
             <div class="col-md-6">
                 <label asp-for="Price" class="form-label fw-semibold">Price ($)</label>
-                <input asp-for="Price" type="number" step="0.01" class="form-control" placeholder="e.g. 28000" required />
+                <input asp-for="Price" type="number" step="0.01" class="form-control" required />
                 <span asp-validation-for="Price" class="text-danger small"></span>
             </div>
             <div class="col-12">
                 <label class="form-label fw-semibold">Car Image</label>
-                <div class="upload-area" id="uploadArea">
+
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <div class="mb-2">
+                        <p class="text-muted small mb-1">Current image (upload a new one to replace it):</p>
+                        <img id="imagePreview" src="@Model.ImagePath" class="upload-preview" alt="Current car image" style="display:block;" />
+                    </div>
+                }
+                else
+                {
+                    <img id="imagePreview" src="#" class="upload-preview" alt="Preview" style="display:none;" />
+                }
+
+                <div class="upload-area mt-2" id="uploadArea">
                     <input type="file" name="imageFile" id="imageFile" accept="image/*" />
                     <div id="uploadPlaceholder">
-                        <div class="upload-icon">🖼️</div>
-                        <p class="mb-1 fw-semibold">Click or drag &amp; drop to upload image</p>
+                        <div class="upload-icon">📂</div>
+                        <p class="mb-1 fw-semibold">Click or drag &amp; drop to replace image</p>
                         <p class="text-muted small">Supports JPG, PNG, WEBP — max 10MB</p>
                     </div>
-                    <img id="imagePreview" class="upload-preview" src="#" alt="Preview" />
                 </div>
             </div>
             <div class="col-12">
                 <label asp-for="Description" class="form-label fw-semibold">Description</label>
-                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Brief description of the vehicle..." required></textarea>
+                <textarea asp-for="Description" class="form-control" rows="3" required></textarea>
                 <span asp-validation-for="Description" class="text-danger small"></span>
             </div>
         </div>
 
         <div class="d-flex gap-2 mt-4">
-            <button type="submit" class="btn btn-success px-4">💾 Save &amp; Publish</button>
+            <button type="submit" class="btn btn-primary px-4">💾 Save Changes</button>
             <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
         </div>
     </form>
@@ -96,8 +110,8 @@
 <script>
     const fileInput = document.getElementById('imageFile');
     const preview = document.getElementById('imagePreview');
-    const placeholder = document.getElementById('uploadPlaceholder');
     const uploadArea = document.getElementById('uploadArea');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
 
     fileInput.addEventListener('change', function () {
         if (this.files && this.files[0]) {
@@ -105,7 +119,7 @@
             reader.onload = e => {
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                placeholder.style.display = 'none';
+                uploadPlaceholder.style.display = 'none';
             };
             reader.readAsDataURL(this.files[0]);
         }

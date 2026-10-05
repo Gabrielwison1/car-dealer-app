@@ -1,0 +1,36 @@
+@model CarDealerApp.Models.Car
+
+@{
+    ViewData["Title"] = "Delete Car";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white fw-semibold">
+            ⚠️ Confirm Delete
+        </div>
+        <div class="card-body">
+            <p>Are you sure you want to permanently delete this vehicle?</p>
+
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" class="img-fluid rounded mb-3" style="max-height:200px; object-fit:cover; width:100%;" alt="Car image" />
+            }
+
+            <table class="table table-sm table-bordered">
+                <tr><th>Make</th><td>@Model.Make</td></tr>
+                <tr><th>Model</th><td>@Model.Model</td></tr>
+                <tr><th>Year</th><td>@Model.Year</td></tr>
+                <tr><th>Price</th><td>$@Model.Price.ToString("N0")</td></tr>
+            </table>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger px-4">🗑️ Yes, Delete</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

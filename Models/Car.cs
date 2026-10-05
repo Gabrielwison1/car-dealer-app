@@ -18,8 +18,8 @@ namespace CarDealerApp.Models
         [Range(0, 100000000)]
         public decimal Price { get; set; }
 
-        [Display(Name = "Image URL")]
-        public string ImageUrl { get; set; } = string.Empty;
+        [Display(Name = "Car Image")]
+        public string ImagePath { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;
     }
