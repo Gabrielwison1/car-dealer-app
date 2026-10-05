@@ -31,7 +31,7 @@ namespace CarDealerApp.Controllers
                 return RedirectToAction("Index", "Admin");
             }
 
-            ModelState.AddModelError("", "Invalid Admin Credentials. (Use admin / Admin123!)");
+            ModelState.AddModelError("", "Invalid Admin Credentials.");
             return View(model);
         }
 
